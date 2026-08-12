@@ -42,7 +42,7 @@ def add_expense():
         "description": description
     })
     save_expenses(expenses)
-    print("✅ Expense added successfully!")
+    print("Expense added successfully!")
 
 def view_expenses():
     expenses = load_expenses()
