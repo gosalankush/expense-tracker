@@ -77,22 +77,43 @@ def view_summary():
         print(f"  • {cat}: {total:.2f} ({percentage:.1f}%)")
     print("-" * 25 + "\n")
 
+def remove_expense():
+    expenses = load_expenses()
+    if not expenses:
+        print("\nNo expenses recorded yet.\n")
+        return
+    
+    target_category = input("Enter the category you want to remove(e.g., Food): ").strip().capitalize()
+
+    category_exists = any(item["category"] == target_category for item in expenses)
+
+    if not category_exists:
+        print(f"\nNo expenses found under the category '{target_category}'.\n")
+
+    updated_expense = [item for item in expenses if item["category"] != target_category]
+
+    save_expenses(updated_expense)
+    print(f"\n All expenses under '{target_category}' has been removed successfully!")
+
 def main():
     while True:
         print("=== Personal Expense Tracker CLI ===")
         print("1. Add Expense")
         print("2. View All Expenses")
         print("3. View Summary by Category")
-        print("4. Exit")
+        print("4. Remove Expense")
+        print("5. Exit")
         
-        choice = input("Select an option (1-4): ").strip()
+        choice = input("Select an option (1-5): ").strip()
         if choice == "1":
             add_expense()
         elif choice == "2":
             view_expenses()
         elif choice == "3":
             view_summary()
-        elif choice == "4":
+        elif choice =="4":
+            remove_expense()
+        elif choice == "5":
             print("Exiting program. Goodbye!")
             break
         else:
