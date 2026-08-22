@@ -139,7 +139,7 @@ def main():
             print("Exiting program. Goodbye!")
             break
         else:
-            print("Invalid choice. Please select 1, 2, 3, or 4.\n")
+            print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
 
 if __name__ == "__main__":
     main()
