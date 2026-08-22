@@ -77,6 +77,25 @@ def view_summary():
         print(f"  • {cat}: {total:.2f} ({percentage:.1f}%)")
     print("-" * 25 + "\n")
 
+def searchExpense():
+    expenses = load_expenses()
+    if not expenses:
+        print("\nNo expenses recorded yet.\n")
+        return
+
+    target_category = input("Enter the category you want to search: ").strip().capitalize()
+    category_exists = [item for item in expenses if item["category"] == target_category]
+
+    if not category_exists:
+        print(f"\nNo expenses found by category : '{target_category}'.\n")
+
+    print("\n--- Expense Found ---")
+    print(f"{'ID':<4} | {'Date':<16} | {'Category':<12} | {'Amount':<8} | {'Description'}")
+    print("-" * 60)
+    for item in category_exists:
+        print(f"{item['id']:<4} | {item['date']:<16} | {item['category']:<12} | {item['amount']:<8.2f} | {item['description']}")
+    print("-" * 60 + "\n")
+
 def remove_expense():
     expenses = load_expenses()
     if not expenses:
@@ -101,19 +120,22 @@ def main():
         print("1. Add Expense")
         print("2. View All Expenses")
         print("3. View Summary by Category")
-        print("4. Remove Expense")
-        print("5. Exit")
+        print("4. View Expense by Category")
+        print("5. Remove Expense")
+        print("6. Exit")
         
-        choice = input("Select an option (1-5): ").strip()
+        choice = input("Select an option (1-6): ").strip()
         if choice == "1":
             add_expense()
         elif choice == "2":
             view_expenses()
         elif choice == "3":
             view_summary()
-        elif choice =="4":
-            remove_expense()
+        elif choice == "4":
+            searchExpense()
         elif choice == "5":
+            remove_expense()
+        elif choice == "6":
             print("Exiting program. Goodbye!")
             break
         else:
