@@ -88,6 +88,7 @@ def searchExpense():
 
     if not category_exists:
         print(f"\nNo expenses found by category : '{target_category}'.\n")
+        return
 
     print("\n--- Expense Found ---")
     print(f"{'ID':<4} | {'Date':<16} | {'Category':<12} | {'Amount':<8} | {'Description'}")
@@ -108,6 +109,7 @@ def remove_expense():
 
     if not category_exists:
         print(f"\nNo expenses found under the category '{target_category}'.\n")
+        return
 
     updated_expense = [item for item in expenses if item["category"] != target_category]
 
