@@ -1,8 +1,69 @@
 import json
 import os
 from datetime import datetime
+import hashlib
+import getpass
 
 DATA_FILE = "expenses.json"
+USER_FILE = "users.json"
+
+def load_users():
+    if not os.path.exists(USER_FILE):
+        return {}
+    try:
+        with open(USER_FILE, "r") as file:                
+            return json.load(file)
+    except json.JSONDecodeError:
+        return {}
+    
+def save_users(users_data):
+    with open(USER_FILE, "w") as file:
+        json.dump(users_data, file, indent=4)
+
+def hash_password(password):
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+def register_user():
+    users = load_users()
+
+    print("---Register New Account---")
+    username = input("Choose a Username: ")
+
+    if username in users:
+        print("Username already exists.")
+        return
+
+    password = getpass.getpass("Choose a Password: ")
+
+    users[username] = {"password_hash":hash_password(password)}
+    save_users(users)
+    print("Account registered and saved successfully!")
+
+def get_and_verify_user():
+    users = load_users()
+
+    if not users:
+        print("No accounts found.Let's create one first!")
+        register_user()
+        users = load_users()
+
+    print("---Secure Login Required---")
+    username = input("Enter Username: ")
+    password = getpass.getpass("Enter Password: ")
+
+    if username not in users:
+        print("Access Denied: User not found.")
+        return False
+
+    stored_hash = users[username]["password_hash"]
+    current_attempt_hash = hash_password(password)
+
+    if current_attempt_hash == stored_hash :
+        print("\n[Access Granted] Welcome to your Expense Tracker")
+        return True
+    else:
+        print("\n [access Denied] Incorrect password")
+        return False
 
 def load_expenses():
     if not os.path.exists(DATA_FILE):
@@ -117,31 +178,37 @@ def remove_expense():
     print(f"\n All expenses under '{target_category}' has been removed successfully!")
 
 def main():
-    while True:
-        print("=== Personal Expense Tracker CLI ===")
-        print("1. Add Expense")
-        print("2. View All Expenses")
-        print("3. View Summary by Category")
-        print("4. View Expense by Category")
-        print("5. Remove Expense")
-        print("6. Exit")
+
+    if get_and_verify_user():
+
+        while True:
+            print("=== Personal Expense Tracker CLI ===")
+            print("1. Add Expense")
+            print("2. View All Expenses")
+            print("3. View Summary by Category")
+            print("4. Search Expense by Category")
+            print("5. Remove Expense")
+            print("6. Exit")
         
-        choice = input("Select an option (1-6): ").strip()
-        if choice == "1":
-            add_expense()
-        elif choice == "2":
-            view_expenses()
-        elif choice == "3":
-            view_summary()
-        elif choice == "4":
-            searchExpense()
-        elif choice == "5":
-            remove_expense()
-        elif choice == "6":
-            print("Exiting program. Goodbye!")
-            break
-        else:
-            print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
+            choice = input("Select an option (1-6): ").strip()
+            if choice == "1":
+                add_expense()
+            elif choice == "2":
+                view_expenses()
+            elif choice == "3":
+                view_summary()
+            elif choice == "4":
+                searchExpense()
+            elif choice == "5":
+                remove_expense()
+            elif choice == "6":
+                print("Exiting program. Goodbye!")
+                break
+            else:
+                print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
+    else:
+        print("Wrong password.")
+        print("Access denied!")
 
 if __name__ == "__main__":
     main()
