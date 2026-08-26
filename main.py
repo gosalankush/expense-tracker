@@ -52,17 +52,17 @@ def get_and_verify_user():
     password = getpass.getpass("Enter Password: ")
 
     if username not in users:
-        print("Access Denied: User not found.")
+        print("\nAccess Denied: User not found.")
         return False
 
     stored_hash = users[username]["password_hash"]
     current_attempt_hash = hash_password(password)
 
     if current_attempt_hash == stored_hash :
-        print("\n[Access Granted] Welcome to your Expense Tracker")
+        print("\nAccess Granted: Welcome to your Expense Tracker\n")
         return True
     else:
-        print("\n [access Denied] Incorrect password")
+        print("\nAccess Denied: Incorrect password")
         return False
 
 def load_expenses():
@@ -206,9 +206,6 @@ def main():
                 break
             else:
                 print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
-    else:
-        print("Wrong password.")
-        print("Access denied!")
 
 if __name__ == "__main__":
     main()
