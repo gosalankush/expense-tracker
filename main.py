@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 import hashlib
 import getpass
+import pandas as pd
+import matplotlib.pyplot as plt
 
 DATA_FILE = "expenses.json"
 USER_FILE = "users.json"
@@ -177,6 +179,15 @@ def remove_expense():
     save_expenses(updated_expense)
     print(f"\n All expenses under '{target_category}' has been removed successfully!")
 
+def visual_expenses():
+    expenses = pd.read_json("expenses.json")
+
+    category_totals = expenses.groupby("category")["amount"].sum()
+
+    plt.pie(category_totals, labels=category_totals.index, autopct="%1.1f%%")
+    plt.show()
+
+
 def main():
 
     if get_and_verify_user():
@@ -188,9 +199,10 @@ def main():
             print("3. View Summary by Category")
             print("4. Search Expense by Category")
             print("5. Remove Expense")
-            print("6. Exit")
+            print("6. View Visual Reports")
+            print("7. Exit")
         
-            choice = input("Select an option (1-6): ").strip()
+            choice = input("Select an option (1-7): ").strip()
             if choice == "1":
                 add_expense()
             elif choice == "2":
@@ -202,6 +214,8 @@ def main():
             elif choice == "5":
                 remove_expense()
             elif choice == "6":
+                visual_expenses()
+            elif choice == "7":
                 print("Exiting program. Goodbye!")
                 break
             else:
