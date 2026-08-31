@@ -9,6 +9,7 @@ A modular Command Line Interface (CLI) application built with Python to track pe
 - **Data Persistence:** Automatically stores and reads expense records from a structured `expenses.json` file.
 - **Category Analytics:** Computes total expenditures and dynamic percentage breakdowns across custom categories.
 - **Security:** Only user with correct login credentials can login to personal expense tracker.
+- **Data Visualization:** A feature where user can see visual reports of heir spendings.
 
 ## Getting Started
 
