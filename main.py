@@ -384,12 +384,7 @@ def main():
                     print("---Savings Account---")
                     print("1. Add Monthly Budget")
                     print("2. Add Yearly Budget")
-                    print("3. View All Budgets")
-                    print("4. Search Budget by Month")
-                    print("5. Update Budget")
-                    print("6. View Visual Reports")
-                    print("7. Calculate Savings and Projections")
-                    print("8. Main Menu")
+                    print("3. Main Menu")
         
                     choice = input("Select an option (1-8): ").strip()
                     if choice == "1":
@@ -400,7 +395,7 @@ def main():
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2 , or 3.\n")
+                        print("Invalid choice. Please select 1, 2 or 3.\n")
 
             elif choice == "3":
                 print("Exiting program. Goodbye!\n")
