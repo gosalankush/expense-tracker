@@ -383,6 +383,32 @@ def update_yearly_budget():
 
     print(f"No budget for {current_year} exists. You can add one in 'Add Budget' section.\n")
 
+def view_budgets():
+    budgets = load_budgets()
+    if not budgets:
+        print("\nNo budgets recorded yet.\n")
+        return
+
+    current_month = datetime.now().strftime("%Y-%m")
+    current_year = datetime.now().strftime("%Y")
+
+    print("\n--- All Budgets ---")
+
+    for item in budgets:
+        if item.get("date", "").startswith(current_month):
+            print("- Monthly Budgets -")
+            print(f"{'ID':<4} | {'Date':<16} | {'Amount':<8} | {'Description'}")
+            print("-" * 60)
+            print(f"{item['id']:<4} | {item['date']:<16} | {item['amount']:<8.2f} | {item['description']}")
+
+    for item in budgets:
+        if item.get("year", "").startswith(current_year):
+            print("- Yearly Budgets -")
+            print(f"{'ID':<4} | {'Date':<16} | {'Amount':<8} | {'Description'}")
+            print("-" * 60)
+            print(f"{item['id']:<4} | {item['date']:<16} | {item['amount']:<8.2f} | {item['description']}")
+    print("-" * 60 + "\n")
+
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -437,9 +463,10 @@ def main():
                     print("2. Add Yearly Budget")
                     print("3. Update Monthly Budget")
                     print("4. Update Yearly Budget")
-                    print("5. Main Menu")
+                    print("5. View All Budgets")
+                    print("6. Main Menu")
         
-                    choice = input("Select an option (1-8): ").strip()
+                    choice = input("Select an option (1-6): ").strip()
                     if choice == "1":
                         add_monthly_budget()
                     elif choice == "2":
@@ -448,11 +475,13 @@ def main():
                         update_monthly_budget()
                     elif choice == "4":
                         update_yearly_budget()
-                    elif choice == "5":
+                    elif choice =="5":
+                        view_budgets()
+                    elif choice == "6":
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2, 3, 4 or 5.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
 
             elif choice == "3":
                 print("Exiting Program ... Goodbye!")
