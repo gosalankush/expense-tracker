@@ -332,6 +332,57 @@ def add_yearly_budget():
     })
     save_budgets(budgets)
     print("Budget added successfully!\n")
+
+def update_monthly_budget():
+    budgets = load_budgets()
+
+    current_month = datetime.now().strftime("%Y-%m")
+
+    for budget in budgets:
+        if budget.get("date", "").startswith(current_month):
+            while True:
+                    try:
+                        upd_amount = float(input("Enter amount for New Budget of Current Month(€ or ₹): "))
+                        if upd_amount <= 0:
+                            print("Amount must be greater than zero.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a valid number.")
+
+            budget["amount"] = upd_amount
+            save_budgets(budgets)
+            print(f"Budget of {current_month} has successfully updated.\n")
+            return
+
+    print(f"No budget for {current_month} exists. You can add one in 'Add Budget' section.\n")
+
+
+def update_yearly_budget():
+
+    budgets = load_budgets()
+
+    current_year = datetime.now().strftime("%Y")
+
+    for budget in budgets:
+        if budget.get("year", "").startswith(current_year):
+            while True:
+                    try:
+                        upd_amount = float(input("Enter amount for New Budget of Current Year(€ or ₹): "))
+                        if upd_amount <= 0:
+                            print("Amount must be greater than zero.")
+                            continue
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a valid number.")
+
+            budget["amount"] = upd_amount
+            save_budgets(budgets)
+            print(f"Budget of {current_year} has successfully updated.\n")
+            return
+
+    print(f"No budget for {current_year} exists. You can add one in 'Add Budget' section.\n")
+
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -384,7 +435,9 @@ def main():
                     print("---Savings Account---")
                     print("1. Add Monthly Budget")
                     print("2. Add Yearly Budget")
-                    print("3. Main Menu")
+                    print("3. Update Monthly Budget")
+                    print("4. Update Yearly Budget")
+                    print("5. Main Menu")
         
                     choice = input("Select an option (1-8): ").strip()
                     if choice == "1":
@@ -392,15 +445,19 @@ def main():
                     elif choice == "2":
                         add_yearly_budget()
                     elif choice == "3":
+                        update_monthly_budget()
+                    elif choice == "4":
+                        update_yearly_budget()
+                    elif choice == "5":
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2 or 3.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4 or 5.\n")
 
             elif choice == "3":
-                print("Exiting program. Goodbye!\n")
-                break;
-
+                print("Exiting Program ... Goodbye!")
+                break
+                
             else:
                 print("Invalid choice. Please enter 1, 2 or 3.")
         
