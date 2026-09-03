@@ -10,6 +10,7 @@ A modular Command Line Interface (CLI) application built with Python to track pe
 - **Category Analytics:** Computes total expenditures and dynamic percentage breakdowns across custom categories.
 - **Security:** Only user with correct login credentials can login to personal expense tracker.
 - **Data Visualization:** A feature where user can see visual reports of heir spendings.
+- **Savings Calculator** A feature where we can see all our savings.
 
 ## Getting Started
 
