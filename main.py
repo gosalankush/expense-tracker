@@ -409,6 +409,60 @@ def view_budgets():
             print(f"{item['id']:<4} | {item['date']:<16} | {item['amount']:<8.2f} | {item['description']}")
     print("-" * 60 + "\n")
 
+def savings_calculator():
+
+    expenses = load_expenses()
+    if not expenses:
+        print("\nNo expenses recorded yet.\n")
+        return 
+
+    budgets = load_budgets()
+    if not budgets:
+        print("\nNo budgets recorded yet.\n")
+        return
+
+    #Overall Expenses 
+    total_expenses = sum(item["amount"] for item in expenses)
+    total_budgets = sum(item["amount"] for item in budgets)
+    total_savings = total_budgets - total_expenses
+    if total_expenses > total_budgets:
+        print("Overall, you got no savings.")
+        print("Try to do less expenses!\n")
+    else:
+        print(f"\nTotal expenses upto Today: {total_expenses}")
+        print(f"Total Savings upto Today: {total_savings}\n")
+
+    #Monthly Expenses
+    current_month = datetime.now().strftime("%Y-%m")
+    monthly_expenses = sum(item["amount"] for item in expenses  if item["date"].startswith(current_month))
+    monthly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_month))
+    monthly_savings = monthly_budgets - monthly_expenses
+
+    if not monthly_budgets:
+        print("You didn't set budget for this month yet.\n")
+        return
+
+    if monthly_expenses > monthly_budgets:
+        print("You got no savings this month.\n")
+    else: 
+        print(f"Total Monthly Expenses: {monthly_expenses}")
+        print(f"Total Monthly Savings: {monthly_savings}\n")
+
+    #Yearly Expenses
+    current_year = datetime.now().strftime("%Y")
+    yearly_expenses = sum(item["amount"] for item in expenses if item["date"].startswith(current_year))
+    yearly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_year))
+    yearly_savings = yearly_budgets - yearly_expenses
+
+    if not yearly_budgets:
+        print("You didn't set budget for this year yet.\n")
+        return
+
+    if yearly_expenses > yearly_budgets:
+        print("You got no savings this year.\n")
+    else: 
+        print(f"Total Yearly Expenses: {yearly_expenses}")
+        print(f"Total Yearly Savings: {yearly_savings}\n")
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -464,7 +518,8 @@ def main():
                     print("3. Update Monthly Budget")
                     print("4. Update Yearly Budget")
                     print("5. View All Budgets")
-                    print("6. Main Menu")
+                    print("6. Calculate Savings and Projections")
+                    print("7. Main Menu")
         
                     choice = input("Select an option (1-6): ").strip()
                     if choice == "1":
@@ -475,9 +530,11 @@ def main():
                         update_monthly_budget()
                     elif choice == "4":
                         update_yearly_budget()
-                    elif choice =="5":
+                    elif choice == "5":
                         view_budgets()
                     elif choice == "6":
+                        savings_calculator()
+                    elif choice == "7":
                         print("Back to Main Manu...\n")
                         break
                     else:
