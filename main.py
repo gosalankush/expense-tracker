@@ -449,7 +449,7 @@ def savings_calculator():
         print(f"Total Monthly Savings: {monthly_savings}\n")
 
     #Yearly Expenses
-    current_year = datetime.now().strftime("%Y")
+    current_year = datetime.now().strftime("%Y-%d")
     yearly_expenses = sum(item["amount"] for item in expenses if item["date"].startswith(current_year))
     yearly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_year))
     yearly_savings = yearly_budgets - yearly_expenses
@@ -463,6 +463,7 @@ def savings_calculator():
     else: 
         print(f"Total Yearly Expenses: {yearly_expenses}")
         print(f"Total Yearly Savings: {yearly_savings}\n")
+
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -521,7 +522,7 @@ def main():
                     print("6. Calculate Savings and Projections")
                     print("7. Main Menu")
         
-                    choice = input("Select an option (1-6): ").strip()
+                    choice = input("Select an option (1-7): ").strip()
                     if choice == "1":
                         add_monthly_budget()
                     elif choice == "2":
@@ -538,7 +539,7 @@ def main():
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2, 3, 4, 5 or 6.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6 or 7.\n")
 
             elif choice == "3":
                 print("Exiting Program ... Goodbye!")
