@@ -287,7 +287,7 @@ def add_monthly_budget():
             print("Invalid input. Please enter a valid number.")
 
     description = input("Enter description (optional): ").strip()
-    date_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    date_str = datetime.now().strftime("%m-%d %H:%M")
  
     budgets.append({
         "id": len(budgets) + 1,
@@ -336,7 +336,7 @@ def add_yearly_budget():
 def update_monthly_budget():
     budgets = load_budgets()
 
-    current_month = datetime.now().strftime("%Y-%m")
+    current_month = datetime.now().strftime("%m-%d")
 
     for budget in budgets:
         if budget.get("date", "").startswith(current_month):
@@ -389,7 +389,7 @@ def view_budgets():
         print("\nNo budgets recorded yet.\n")
         return
 
-    current_month = datetime.now().strftime("%Y-%m")
+    current_month = datetime.now().strftime("%m-%d")
     current_year = datetime.now().strftime("%Y")
 
     print("\n--- All Budgets ---")
@@ -433,36 +433,60 @@ def savings_calculator():
         print(f"Total Savings upto Today: {total_savings}\n")
 
     #Monthly Expenses
-    current_month = datetime.now().strftime("%Y-%m")
-    monthly_expenses = sum(item["amount"] for item in expenses  if item["date"].startswith(current_month))
+    current_month = datetime.now().strftime("%m-%d")
+    current_month_expenses = datetime.now().strftime("%Y-%m")
+    monthly_expenses = sum(item["amount"] for item in expenses  if item["date"].startswith(current_month_expenses))
     monthly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_month))
     monthly_savings = monthly_budgets - monthly_expenses
 
     if not monthly_budgets:
         print("You didn't set budget for this month yet.\n")
-        return
-
-    if monthly_expenses > monthly_budgets:
-        print("You got no savings this month.\n")
-    else: 
-        print(f"Total Monthly Expenses: {monthly_expenses}")
-        print(f"Total Monthly Savings: {monthly_savings}\n")
+    else:
+        if monthly_expenses > monthly_budgets:
+            print("You got no savings this month.\n")
+        else: 
+            print(f"Total Monthly Expenses: {monthly_expenses}")
+            print(f"Total Monthly Savings: {monthly_savings}\n")
 
     #Yearly Expenses
-    current_year = datetime.now().strftime("%Y-%d")
+    current_year = datetime.now().strftime("%Y")
     yearly_expenses = sum(item["amount"] for item in expenses if item["date"].startswith(current_year))
     yearly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_year))
     yearly_savings = yearly_budgets - yearly_expenses
 
     if not yearly_budgets:
         print("You didn't set budget for this year yet.\n")
+    else:
+        if yearly_expenses > yearly_budgets:
+            print("You got no savings this year.\n")
+        else: 
+            print(f"Total Yearly Expenses: {yearly_expenses}")
+            print(f"Total Yearly Savings: {yearly_savings}\n")
+
+    choice = input("Do you want to run a Projection?(Y/y for Yes!) ").strip().capitalize()
+
+    p_total_mexpenses = 0.0
+    for item in expenses:
+        p_monthly_expenses = item["amount"]
+        p_total_mexpenses += p_monthly_expenses
+
+    p_total_mbudgets = 0.0
+    for item in budgets:
+        p_monthly_budgets = item["amount"]
+        p_total_mbudgets += p_monthly_budgets
+
+    if p_total_mexpenses > p_total_mbudgets:
+        print("Error: You have either missed to set any monthly budget (If yes, then remove expenses of that month.)")
+        print("Or you need to lower your expenses for calculating this!\n")
         return
 
-    if yearly_expenses > yearly_budgets:
-        print("You got no savings this year.\n")
-    else: 
-        print(f"Total Yearly Expenses: {yearly_expenses}")
-        print(f"Total Yearly Savings: {yearly_savings}\n")
+    total_psavings = p_total_mbudgets - p_total_mexpenses
+        
+    if choice =="Y":
+        target = float(input("Enter your target amount: "))
+        complete = target/total_psavings
+        print(f"You will reach your target in {complete:.1F} months.")
+        print("Keep Going!\n")
 
 #---------------------------budgets.json(Ending)-------------------------------
 
@@ -542,11 +566,11 @@ def main():
                         print("Invalid choice. Please select 1, 2, 3, 4, 5, 6 or 7.\n")
 
             elif choice == "3":
-                print("Exiting Program ... Goodbye!")
+                print("Exiting Program ... Goodbye!\n")
                 break
                 
             else:
-                print("Invalid choice. Please enter 1, 2 or 3.")
+                print("Invalid choice. Please enter 1, 2 or 3.\n")
         
 if __name__ == "__main__":
     main()
