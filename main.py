@@ -229,7 +229,6 @@ def visual_expenses():
         plt.show()
     else:
         print("No expenses of current year recorded yet.\n")
-    
 
 def expenses_calculator():
     expenses = load_expenses()
@@ -488,6 +487,18 @@ def savings_calculator():
         print(f"You will reach your target in {complete:.1F} months.")
         print("Keep Going!\n")
 
+def visual_budgets():
+    budgets = pd.read_json("budgets.json")
+    expenses = pd.read_json("expenses.json")
+
+    budget = load_budgets()
+    expense = load_expenses()
+    if not expense and not budget:
+        print("\nNo budgets recorded yet.\n")
+        return
+
+    print("Bar chart for Savings\n")
+    
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -543,10 +554,11 @@ def main():
                     print("3. Update Monthly Budget")
                     print("4. Update Yearly Budget")
                     print("5. View All Budgets")
-                    print("6. Calculate Savings and Projections")
-                    print("7. Main Menu")
+                    print("6. View Visual Reports")
+                    print("7. Calculate Savings and Projections")
+                    print("8. Main Menu")
         
-                    choice = input("Select an option (1-7): ").strip()
+                    choice = input("Select an option (1-8): ").strip()
                     if choice == "1":
                         add_monthly_budget()
                     elif choice == "2":
@@ -558,12 +570,14 @@ def main():
                     elif choice == "5":
                         view_budgets()
                     elif choice == "6":
-                        savings_calculator()
+                        visual_budgets()
                     elif choice == "7":
+                        savings_calculator()
+                    elif choice == "8":
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6 or 7.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6 7 or 8.\n")
 
             elif choice == "3":
                 print("Exiting Program ... Goodbye!\n")
