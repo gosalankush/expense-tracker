@@ -279,7 +279,7 @@ def add_monthly_budget():
 
     budgets = load_budgets()
 
-    current_month = datetime.now().strftime("%Y-%m")
+    current_month = datetime.now().strftime("%m-%d")
 
     for budget in budgets:
         if budget.get("date", "").startswith(current_month) :
