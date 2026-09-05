@@ -246,6 +246,19 @@ def expenses_calculator():
     current_year = datetime.now().strftime("%Y")
     yearly_expenses = sum(item["amount"] for item in expenses if item["date"].startswith(current_year))
     print(f"Total Yearly Expenses: {yearly_expenses}\n")
+
+def expenses_csv():
+    expenses = load_expenses()
+    if not expenses:
+        print("\nNo expenses recorded yet.")
+        return
+
+    df = pd.DataFrame(expenses)
+
+    filename = f"expenses_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+    df.to_csv(filename, index=False)
+    print(f"\nExpenses successfully exported to '{filename}'!\n")
 #---------------------------expenses.json(Ending)-------------------------------
 
 #--------------------------budgets.json(Starting)------------------------------
@@ -538,7 +551,6 @@ def visual_budgets():
     monthly_expenses = [0.0] * 12
     monthly_budgets = [0.0] * 12
 
-    # Calculate monthly expenses across the year
     if not expenses_df.empty and 'date' in expenses_df.columns:
         expenses_df['date_dt'] = pd.to_datetime(expenses_df['date'], errors='coerce')
         year_exp = expenses_df[expenses_df['date_dt'].dt.strftime("%Y") == current_year_str]
@@ -547,7 +559,6 @@ def visual_budgets():
                 m_idx = row['date_dt'].month - 1
                 monthly_expenses[m_idx] += row['amount']
 
-    # Calculate monthly budgets across the year (handles "MM-DD" string formatting)
     if not budgets_df.empty and 'date' in budgets_df.columns:
         for _, row in budgets_df.iterrows():
             date_str = str(row['date'])
@@ -558,14 +569,12 @@ def visual_budgets():
             except (ValueError, IndexError):
                 continue
 
-    # Monthly Savings = Budget - Expense for each month
     yearly_savings = [b - e for b, e in zip(monthly_budgets, monthly_expenses)]
 
     plt.figure(figsize=(10, 5))
     bar_colors = ['#4CAF50' if s >= 0 else '#F44336' for s in yearly_savings]
     yearly_bars = plt.bar(months, yearly_savings, color=bar_colors, edgecolor='black', width=0.6)
 
-    # Label values above/below each month's bar
     for bar in yearly_bars:
         yval = bar.get_height()
         if yval != 0:
@@ -578,7 +587,19 @@ def visual_budgets():
     plt.title(f"Month-by-Month Savings Breakdown ({current_year_str})")
     plt.tight_layout()
     plt.show()
-    
+
+def budgets_csv():
+    budgets = load_budgets()
+    if not budgets:
+        print("\nNo budgets recorded yet.")
+        return
+
+    df = pd.DataFrame(budgets)
+
+    filename = f"budgets_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+    df.to_csv(filename, index=False)
+    print(f"\nBudgets successfully exported to '{filename}'!\n")
 #---------------------------budgets.json(Ending)-------------------------------
 
 def main():
@@ -603,9 +624,10 @@ def main():
                     print("5. Remove Expense")
                     print("6. View Visual Reports")
                     print("7. Calculate Monthly/Yearly and Overall Expenses")
-                    print("8. Main Menu")
+                    print("8. Export Expenses to CSV file")
+                    print("9. Main Menu")
         
-                    choice = input("Select an option (1-8): ").strip()
+                    choice = input("Select an option (1-9): ").strip()
                     if choice == "1":
                         add_expense()
                     elif choice == "2":
@@ -621,10 +643,12 @@ def main():
                     elif choice =="7":
                         expenses_calculator()
                     elif choice == "8":
+                        expenses_csv()
+                    elif choice == "9":
                         print("Back to Main Menu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6, 7 or 8.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6, 7, 8 or 9.\n")
 
             elif choice == "2":
                 while True: 
@@ -636,9 +660,10 @@ def main():
                     print("5. View All Budgets")
                     print("6. View Visual Reports")
                     print("7. Calculate Savings and Projections")
-                    print("8. Main Menu")
+                    print("8. Export Budgets to CSV file")
+                    print("9. Main Menu")
         
-                    choice = input("Select an option (1-8): ").strip()
+                    choice = input("Select an option (1-9): ").strip()
                     if choice == "1":
                         add_monthly_budget()
                     elif choice == "2":
@@ -654,10 +679,12 @@ def main():
                     elif choice == "7":
                         savings_calculator()
                     elif choice == "8":
+                        budgets_csv()
+                    elif choice == "9":
                         print("Back to Main Manu...\n")
                         break
                     else:
-                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6 7 or 8.\n")
+                        print("Invalid choice. Please select 1, 2, 3, 4, 5, 6, 7, 8 or 9.\n")
 
             elif choice == "3":
                 print("Exiting Program ... Goodbye!\n")
