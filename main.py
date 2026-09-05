@@ -401,7 +401,7 @@ def view_budgets():
         print("\nNo budgets recorded yet.\n")
         return
 
-    current_month = datetime.now().strftime("%m-%d")
+    current_month = datetime.now().strftime("%m")
     current_year = datetime.now().strftime("%Y")
 
     print("\n--- All Budgets ---")
