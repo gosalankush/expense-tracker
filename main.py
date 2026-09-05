@@ -445,7 +445,7 @@ def savings_calculator():
         print(f"Total Savings upto Today: {total_savings}\n")
 
     #Monthly Expenses
-    current_month = datetime.now().strftime("%m-%d")
+    current_month = datetime.now().strftime("%m")
     current_month_expenses = datetime.now().strftime("%Y-%m")
     monthly_expenses = sum(item["amount"] for item in expenses  if item["date"].startswith(current_month_expenses))
     monthly_budgets = sum(item["amount"] for item in budgets if item["date"].startswith(current_month))
