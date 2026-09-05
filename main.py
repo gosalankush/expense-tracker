@@ -193,13 +193,13 @@ def visual_expenses():
         return
     
 
-    print("Pie chart for Overall Expenses\n")
+    print("- Displaying Pie chart for Overall Expenses -\n")
     overall_expenses = expenses.groupby("category")["amount"].sum()
     plt.pie(overall_expenses, labels=overall_expenses.index, autopct="%1.1f%%")
     plt.title("For all Expenses")
     plt.show()
 
-    print("Pie chart for Monthly Expenses\n")
+    print("- Displaying Pie chart for Monthly Expenses -\n")
     current_month = datetime.now().strftime("%Y-%m")
     monthly_expenses = expenses[expenses['date'].dt.strftime("%Y-%m") == current_month] 
 
@@ -211,7 +211,7 @@ def visual_expenses():
     else:
         print("No expenses of current month recorded yet.\n")
 
-    print("Bar chart for Yearly Expenses\n")
+    print("- Displaying Bar chart for Yearly Expenses -\n")
     current_year = datetime.now().strftime("%Y")
     yearly_expenses = expenses[expenses['date'].dt.strftime("%Y") == current_year]
 
@@ -488,16 +488,96 @@ def savings_calculator():
         print("Keep Going!\n")
 
 def visual_budgets():
-    budgets = pd.read_json("budgets.json")
-    expenses = pd.read_json("expenses.json")
+    expenses = load_expenses()
+    budgets = load_budgets()
 
-    budget = load_budgets()
-    expense = load_expenses()
-    if not expense and not budget:
-        print("\nNo budgets recorded yet.\n")
+    if not expenses and not budgets:
+        print("\nNo budgets or expenses recorded yet to display visuals.\n")
         return
 
-    print("Bar chart for Savings\n")
+    expenses_df = pd.DataFrame(expenses)
+    budgets_df = pd.DataFrame(budgets)
+
+    current_month_str = datetime.now().strftime("%m") 
+    current_year_str = datetime.now().strftime("%Y")   
+
+    total_m_expense = 0.0
+    if not expenses_df.empty and 'date' in expenses_df.columns:
+        m_exp = expenses_df[expenses_df['date'].str.startswith(f"{current_year_str}-{current_month_str}")]
+        total_m_expense = m_exp['amount'].sum() if not m_exp.empty else 0.0
+
+    total_m_budget = 0.0
+    if not budgets_df.empty and 'date' in budgets_df.columns:
+        m_bud = budgets_df[budgets_df['date'].str.startswith(f"{current_month_str}-")]
+        total_m_budget = m_bud['amount'].sum() if not m_bud.empty else 0.0
+
+    total_m_savings = total_m_budget - total_m_expense
+
+    print("\n- Displaying Current Month Visual Report -")
+    categories = ['Total Budget', 'Total Expenses', 'Savings']
+    values = [total_m_budget, total_m_expense, total_m_savings]
+    colors = ['#4CAF50', '#F44336', '#2196F3' if total_m_savings >= 0 else '#FF9800']
+
+    plt.figure(figsize=(8, 5))
+    bars = plt.bar(categories, values, color=colors, edgecolor='black', width=0.5)
+
+    for bar in bars:
+        yval = bar.get_height()
+        va_pos = 'bottom' if yval >= 0 else 'top'
+        plt.text(bar.get_x() + bar.get_width()/2.0, yval, f'{yval:.2f}', ha='center', va=va_pos)
+
+    plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+    plt.ylabel("Amount (€ / ₹)")
+    plt.title(f"Monthly Savings Breakdown (Month {current_month_str})")
+    plt.tight_layout()
+    plt.show()
+
+    print("\n- Displaying Yearly Month-by-Month Savings Report -")
+    
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    monthly_expenses = [0.0] * 12
+    monthly_budgets = [0.0] * 12
+
+    # Calculate monthly expenses across the year
+    if not expenses_df.empty and 'date' in expenses_df.columns:
+        expenses_df['date_dt'] = pd.to_datetime(expenses_df['date'], errors='coerce')
+        year_exp = expenses_df[expenses_df['date_dt'].dt.strftime("%Y") == current_year_str]
+        for _, row in year_exp.iterrows():
+            if pd.notnull(row['date_dt']):
+                m_idx = row['date_dt'].month - 1
+                monthly_expenses[m_idx] += row['amount']
+
+    # Calculate monthly budgets across the year (handles "MM-DD" string formatting)
+    if not budgets_df.empty and 'date' in budgets_df.columns:
+        for _, row in budgets_df.iterrows():
+            date_str = str(row['date'])
+            try:
+                m_num = int(date_str.split('-')[0])
+                if 1 <= m_num <= 12:
+                    monthly_budgets[m_num - 1] += row['amount']
+            except (ValueError, IndexError):
+                continue
+
+    # Monthly Savings = Budget - Expense for each month
+    yearly_savings = [b - e for b, e in zip(monthly_budgets, monthly_expenses)]
+
+    plt.figure(figsize=(10, 5))
+    bar_colors = ['#4CAF50' if s >= 0 else '#F44336' for s in yearly_savings]
+    yearly_bars = plt.bar(months, yearly_savings, color=bar_colors, edgecolor='black', width=0.6)
+
+    # Label values above/below each month's bar
+    for bar in yearly_bars:
+        yval = bar.get_height()
+        if yval != 0:
+            va_pos = 'bottom' if yval >= 0 else 'top'
+            plt.text(bar.get_x() + bar.get_width()/2.0, yval, f'{yval:.0f}', ha='center', va=va_pos, fontsize=8)
+
+    plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+    plt.xlabel("Months")
+    plt.ylabel("Savings (€ / ₹)")
+    plt.title(f"Month-by-Month Savings Breakdown ({current_year_str})")
+    plt.tight_layout()
+    plt.show()
     
 #---------------------------budgets.json(Ending)-------------------------------
 
