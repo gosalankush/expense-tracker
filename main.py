@@ -279,7 +279,7 @@ def add_monthly_budget():
 
     budgets = load_budgets()
 
-    current_month = datetime.now().strftime("%m-%d")
+    current_month = datetime.now().strftime("%m")
 
     for budget in budgets:
         if budget.get("date", "").startswith(current_month) :
@@ -681,7 +681,7 @@ def main():
                     elif choice == "8":
                         budgets_csv()
                     elif choice == "9":
-                        print("Back to Main Manu...\n")
+                        print("Back to Main Menu...\n")
                         break
                     else:
                         print("Invalid choice. Please select 1, 2, 3, 4, 5, 6, 7, 8 or 9.\n")
